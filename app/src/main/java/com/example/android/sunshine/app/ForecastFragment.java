@@ -1,6 +1,8 @@
 package com.example.android.sunshine.app;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,8 +15,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +41,7 @@ import java.util.List;
 public class ForecastFragment extends Fragment {
 
     ArrayAdapter<String> mForecastAdapter;
-
+    public final static String DAY_DETAILS="com.android.example.DAY_DETAILS";
 
     public ForecastFragment() {
     }
@@ -66,7 +70,7 @@ public class ForecastFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            new FetchWeatherTask().execute("94043");
+            new FetchWeatherTask().execute("Hyderabad,IN");
             return true;
         }
 
@@ -97,8 +101,10 @@ public class ForecastFragment extends Fragment {
                 new ArrayAdapter<String>(
                         getActivity(), // The current context (this activity)
                         R.layout.list_item_forecast, // The name of the layout ID.
-                        R.id.list_item_forecast_textview, // The ID of the textview to populate.
+                        R.id.list_item_forecast_textview, // The ID of the TextView to populate.
                         weekForecast);
+
+        new FetchWeatherTask().execute("Hyderabad,IN");
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -106,7 +112,18 @@ public class ForecastFragment extends Fragment {
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                String forecast=mForecastAdapter.getItem(i);
+                Intent detailsIntent= new Intent(getContext(),DetailActivity.class);
+                detailsIntent.putExtra(DAY_DETAILS,forecast);
+                startActivity(detailsIntent);
+//                Toast.makeText(getActivity(),forecast,Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return rootView;
 
@@ -114,6 +131,17 @@ public class ForecastFragment extends Fragment {
         class FetchWeatherTask extends AsyncTask<String, Void, String[]>{
 
         private final String LOG_TAG= FetchWeatherTask.class.getSimpleName();
+
+            @Override
+            protected void onPostExecute(String[] forecastResult) {
+                if(forecastResult!=null){
+                    mForecastAdapter.clear();
+                    for(String dayForecast: forecastResult){
+                        mForecastAdapter.add(dayForecast);
+                    }
+                }
+            }
+
             @Override
             protected String[] doInBackground(String... params) {
 
@@ -157,7 +185,7 @@ public class ForecastFragment extends Fragment {
 
                     URL url = new URL(builtUri.toString());
 
-                    Log.v(LOG_TAG, "Built URI " + builtUri.toString());
+//                    Log.v(LOG_TAG, "Built URI " + builtUri.toString());
                     // Create the request to OpenWeatherMap, and open the connection
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
@@ -186,7 +214,7 @@ public class ForecastFragment extends Fragment {
                     }
                     forecastJsonStr = buffer.toString();
 
-                    Log.v(LOG_TAG,"Json string::::::::::"+forecastJsonStr);
+//                    Log.v(LOG_TAG,"Json string::::::::::"+forecastJsonStr);
 
                 } catch (IOException e) {
                     Log.e(LOG_TAG, "Error ", e);
@@ -308,9 +336,9 @@ public class ForecastFragment extends Fragment {
                     resultStrs[i] = day + " - " + description + " - " + highAndLow;
                 }
 
-                for (String s : resultStrs) {
-                    Log.v(LOG_TAG, "Forecast entry: " + s);
-                }
+//                for (String s : resultStrs) {
+//                    Log.v(LOG_TAG, "Forecast entry: " + s);
+//                }
                 return resultStrs;
 
             }
