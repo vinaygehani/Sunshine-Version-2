@@ -41,7 +41,7 @@ import java.util.List;
 public class ForecastFragment extends Fragment {
 
     ArrayAdapter<String> mForecastAdapter;
-    public final static String DAY_DETAILS="com.android.example.DAY_DETAILS";
+
 
     public ForecastFragment() {
     }
@@ -117,9 +117,9 @@ public class ForecastFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                String forecast=mForecastAdapter.getItem(i);
+                String forecastStr=mForecastAdapter.getItem(i);
                 Intent detailsIntent= new Intent(getContext(),DetailActivity.class);
-                detailsIntent.putExtra(DAY_DETAILS,forecast);
+                detailsIntent.putExtra(Intent.EXTRA_TEXT,forecastStr);
                 startActivity(detailsIntent);
 //                Toast.makeText(getActivity(),forecast,Toast.LENGTH_SHORT).show();
             }
