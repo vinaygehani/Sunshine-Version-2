@@ -3,9 +3,11 @@ package com.example.android.sunshine.app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -43,9 +45,6 @@ public class ForecastFragment extends Fragment {
     ArrayAdapter<String> mForecastAdapter;
 
 
-    public ForecastFragment() {
-    }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +59,12 @@ public class ForecastFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateWeather();
+        //TODO: change to on preference update
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -70,41 +75,60 @@ public class ForecastFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            new FetchWeatherTask().execute("Hyderabad,IN");
+           updateWeather();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void updateWeather(){
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String location = sharedPref.getString(getString(R.string.pref_location_key),"");
+
+        new FetchWeatherTask().execute(location);
+
+
+
+//        Toast.makeText(getActivity(),"Fetching data..",Toast.LENGTH_SHORT).show();
+
+//        Toast.makeText(getActivity(),"Location: " + location,Toast.LENGTH_SHORT).show();
+//
+//        Toast.makeText(getActivity(),"Unit: " + unitPref,Toast.LENGTH_SHORT).show();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Create some dummy data for the ListView.  Here's a sample weekly forecast
-        String[] data = {
-                "Mon 6/23 - Sunny - 31/17",
-                "Tue 6/24 - Foggy - 21/8",
-                "Wed 6/25 - Cloudy - 22/17",
-                "Thurs 6/26 - Rainy - 18/11",
-                "Fri 6/27 - Foggy - 21/10",
-                "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
-                "Sun 6/29 - Sunny - 20/7"
-        };
-        List<String> weekForecast = new ArrayList<String>(Arrays.asList(data));
+//        // Create some dummy data for the ListView.  Here's a sample weekly forecast
+//        String[] data = {
+//                "Mon 6/23 - Sunny - 31/17",
+//                "Tue 6/24 - Foggy - 21/8",
+//                "Wed 6/25 - Cloudy - 22/17",
+//                "Thurs 6/26 - Rainy - 18/11",
+//                "Fri 6/27 - Foggy - 21/10",
+//                "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
+//                "Sun 6/29 - Sunny - 20/7"
+//        };
+//        List<String> weekForecast = new ArrayList<String>(Arrays.asList(data));
 
 
         // Now that we have some dummy forecast data, create an ArrayAdapter.
         // The ArrayAdapter will take data from a source (like our dummy forecast) and
         // use it to populate the ListView it's attached to.
+
+
+
+
         mForecastAdapter =
                 new ArrayAdapter<String>(
                         getActivity(), // The current context (this activity)
                         R.layout.list_item_forecast, // The name of the layout ID.
                         R.id.list_item_forecast_textview, // The ID of the TextView to populate.
-                        weekForecast);
+                        new ArrayList<String>());
 
-        new FetchWeatherTask().execute("Hyderabad,IN");
+        updateWeather();
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -259,11 +283,22 @@ public class ForecastFragment extends Fragment {
              */
             private String formatHighLows(double high, double low) {
                 // For presentation, assume the user doesn't care about tenths of a degree.
+
+
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+               String unitPref = sharedPref.getString(getString(R.string.pref_unit_key),"");
+
+                if (unitPref.equals("2")) {
+                    high = (high * 1.8) + 32;
+                    low = (low * 1.8) + 32;
+                }
+
+
                 long roundedHigh = Math.round(high);
                 long roundedLow = Math.round(low);
 
-                String highLowStr = roundedHigh + "/" + roundedLow;
-                return highLowStr;
+
+                return (roundedHigh + "/" + roundedLow);
             }
 
             /**
