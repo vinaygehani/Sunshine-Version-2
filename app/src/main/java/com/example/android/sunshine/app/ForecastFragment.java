@@ -59,12 +59,7 @@ public class ForecastFragment extends Fragment {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateWeather();
-        //TODO: change to on preference update
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -84,8 +79,8 @@ public class ForecastFragment extends Fragment {
 
     private void updateWeather(){
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String location = sharedPref.getString(getString(R.string.pref_location_key),"");
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = sharedPref.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default));
 
         new FetchWeatherTask().execute(location);
 
@@ -142,7 +137,7 @@ public class ForecastFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                 String forecastStr=mForecastAdapter.getItem(i);
-                Intent detailsIntent= new Intent(getContext(),DetailActivity.class);
+                Intent detailsIntent= new Intent(getActivity(),DetailActivity.class);
                 detailsIntent.putExtra(Intent.EXTRA_TEXT,forecastStr);
                 startActivity(detailsIntent);
 //                Toast.makeText(getActivity(),forecast,Toast.LENGTH_SHORT).show();
@@ -285,7 +280,7 @@ public class ForecastFragment extends Fragment {
                 // For presentation, assume the user doesn't care about tenths of a degree.
 
 
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                String unitPref = sharedPref.getString(getString(R.string.pref_unit_key),"");
 
                 if (unitPref.equals("2")) {

@@ -13,6 +13,8 @@ import android.widget.TextView;
  */
 public class DetailActivityFragment extends Fragment {
 
+    public static String forecastStr;
+
     public DetailActivityFragment() {
     }
 
@@ -25,7 +27,7 @@ public class DetailActivityFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-            String forecastStr = intent.getStringExtra(Intent.EXTRA_TEXT);
+            forecastStr = intent.getStringExtra(Intent.EXTRA_TEXT);
             ((TextView) rootView.findViewById(R.id.details_text_view))
                     .setText(forecastStr);
 
@@ -33,5 +35,9 @@ public class DetailActivityFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    public static String getForecastStr() {
+        return forecastStr;
     }
 }

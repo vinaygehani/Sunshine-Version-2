@@ -5,7 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="refresh">Refresh</string>
-    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_detail">Details</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
@@ -68,6 +68,9 @@
     <string name="pref_location_title" translatable="false">Location</string>
     <string name="pref_unit" translatable="false">Unit</string>
     <string name="pref_unit_key" translatable="false">pref_unit_key" </string>
-    <string name="title_activity_settings_activity">SettingsACtivity</string>
+    <string name="title_activity_settings_activity">Settings</string>
+    <string name="pref_unit_default">1</string>
+    <string name="show_on_map">Show on map</string>
+    <string name="share">Share</string>
 
 </resources>
