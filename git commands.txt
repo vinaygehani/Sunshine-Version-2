@@ -1,0 +1,5 @@
+git init
+
+git clone https://github.com/udacity/Sunshine-Version-2.git
+
+git checkout 1.01_hello_world
