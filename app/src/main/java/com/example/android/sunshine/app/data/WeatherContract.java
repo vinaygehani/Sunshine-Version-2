@@ -72,6 +72,7 @@ public class WeatherContract {
         public static Uri buildLocationUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
         public static final String TABLE_NAME = "location";
         // The location setting string is what will be sent to openweathermap
         // as the location query.
@@ -107,7 +108,9 @@ public class WeatherContract {
             Student: Fill in this buildWeatherLocation function
          */
         public static Uri buildWeatherLocation(String locationSetting) {
-            return null;
+
+            return CONTENT_URI.buildUpon().appendPath(locationSetting).build();
+
         }
 
         public static Uri buildWeatherLocationWithStartDate(
